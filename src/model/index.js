@@ -1,12 +1,10 @@
 
 var topicName = "value"
 
-var ws = new WebSocket("ws://" + "172.26.3.42:80/value");
-alert(ws)
+var ws = new WebSocket("ws://" + "localhost:80/");
 // we get notified once connected to the server
 ws.onopen = function(event) {
-    alert("We are connected.");
-    ws.send("value");
+    ws.send("presence");
 };
 
 
@@ -15,6 +13,7 @@ ws.onopen = function(event) {
 var messages = document.querySelector('#messages');
 var line;
 ws.onmessage = function(event) {
+    alert("Presence");
     line = document.createElement('li');
     line.textContent = event.data;
     messages.appendChild(line);
