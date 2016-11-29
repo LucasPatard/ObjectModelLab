@@ -1,20 +1,54 @@
 
-var topicName = "value"
 
-var ws = new WebSocket("ws://" + "localhost:80/");
+
+var client = new Paho.MQTT.Client("localhost", Number(80), "/ws", "clientId");
+//var ws = new WebSocket("ws://" + "localhost:80/");
 // we get notified once connected to the server
-ws.onopen = function(event) {
-    ws.send("presence");
-};
-
-
-
-// listen to messages comming from the server. When it happens, create a new <li> and append it to the DOM.
 var messages = document.querySelector('#messages');
 var line;
-ws.onmessage = function(event) {
-    alert("Presence");
+var sensors = [];
+client.onMessageArrived = function (message) {
+
+    // construction de l'objet l'objet Sensor que l'on stock
+    var obj = JSON.parse(message.payloadString);
+    var newSensor = true;
+    sensors.forEach(function(sensor){
+        if(sensor.name === message.destinationName.substring(6)){
+            sensor.data.values.push(obj.value);
+            sensor.data.labels.push(new Date().toString());
+            newSensor = false;
+        }
+    });
+    if(newSensor){
+        sensors.push(new Sensor(
+            {id : message.destinationName.substring(6),
+                name : message.destinationName.substring(6),
+                type : obj.type,
+                data : {
+                    values : [obj.value],
+                    labels :[new Date().toString()],
+                }
+            }))
+    }
+
+    //trace des messages reçus
     line = document.createElement('li');
-    line.textContent = event.data;
     messages.appendChild(line);
+    line.textContent = "ID :"+message.destinationName.substring(6)+" type :" +obj.type+" value :" +obj.value;
+
 };
+function onConnect(){
+    client.subscribe('value/#');
+}
+
+// Connect the client, providing an onConnect callback
+client.connect({
+    onSuccess: onConnect
+});
+
+
+
+
+
+
+

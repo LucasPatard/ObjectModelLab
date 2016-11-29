@@ -7,16 +7,19 @@
     "start": "cross-env NODE_ENV=development webpack-dev-server --hot --inline",
     "build": "cross-env NODE_ENV=production webpack",
     "test": "cross-env NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js --watch",
-    "ci": "cross-env NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js "
+    "ci": "cross-env NODE_ENV=test mocha --recursive --compilers js:babel-register --require ./test/setup.js ",
+    "babel": "cross-env NODE_ENV=production babel src/model/index.js -o src/model/bundle.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "babel-cli": "^6.18.0",
     "babel-core": "^6.17.0",
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-es2016": "^6.16.0",
+    "babel-preset-latest": "^6.16.0",
     "babel-preset-react": "^6.16.0",
     "cross-env": "^3.1.2",
     "eslint": "^3.7.1",
